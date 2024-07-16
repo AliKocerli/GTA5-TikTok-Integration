@@ -102,19 +102,25 @@ public class GTAVWebhookScript : Script
                     break;
                 }
             case "spawn_vehicle":
-                {
-                    VehicleHash vehicleHash;
-                    if (Enum.TryParse<VehicleHash>(command.custom, out vehicleHash))
-                    {
-                        spawnedVehicles.Add(World.CreateVehicle(new Model(vehicleHash), Game.Player.Character.Position + Game.Player.Character.ForwardVector * 5));
-                        Logger.Log("Vehicle spawned: " + command.custom);
-                    }
-                    else
-                    {
-                        Logger.Log("Cannot parse vehicle name: " + command.custom);
-                    }
-                    break;
-                }
+{
+    VehicleHash vehicleHash;
+    if (Enum.TryParse<VehicleHash>(command.custom, out vehicleHash))
+    {
+        // Aracı oluştur
+        Vehicle newVehicle = World.CreateVehicle(new Model(vehicleHash), Game.Player.Character.Position + Game.Player.Character.ForwardVector * 5);
+        spawnedVehicles.Add(newVehicle);
+
+        // Oyuncuyu yeni araca bindir
+        Game.Player.Character.SetIntoVehicle(newVehicle, VehicleSeat.Driver);
+
+        Logger.Log("Vehicle spawned: " + command.custom);
+    }
+    else
+    {
+        Logger.Log("Cannot parse vehicle name: " + command.custom);
+    }
+    break;
+}
             case "remove_spawned_vehicles":
                 {
                     try
